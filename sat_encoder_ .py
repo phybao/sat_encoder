@@ -9,7 +9,7 @@ baud_rate = 9600              # Must match the baud rate set in the Arduino code
 timeout = 2                   # Timeout for serial reading
 
 # Output CSV file
-output_file = "arduino_positions_xy.csv"
+output_file = "sat_encoder_xy.csv"
 
 def initialize_csv(file_name):
     """Initialize the CSV file with headers."""
