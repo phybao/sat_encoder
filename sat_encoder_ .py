@@ -1,7 +1,8 @@
 import serial
 import csv
 import time
-import keyboard  # Install this library with `pip install keyboard`
+from pynput import keyboard  # Replace `keyboard` with `pynput` for Linux compatibility
+
 
 # Set up the Serial connection
 arduino_port = '/dev/ttyUSB1'  # Update this to match the correct port for your Arduino
@@ -34,20 +35,26 @@ def parse_arduino_data(line):
     except (IndexError, ValueError) as e:
         print(f"Error parsing line: {line}. Error: {e}")
         return None, None
+def wait_for_enter():
+    """Wait for the user to press the 'Enter' key."""
+    print("Press 'Enter' to start logging and send the signal...")
 
+    def on_press(key):
+        if key == keyboard.Key.enter:
+            return False  # Stop listening when 'Enter' is pressed
+
+    with keyboard.Listener(on_press=on_press) as listener:
+        listener.join()
 def main():
     # Initialize the CSV file
     initialize_csv(output_file)
-    print(f"Waiting to send start signal. Press 'Enter' to start logging and send the signal...")
 
     try:
         with serial.Serial(arduino_port, baud_rate, timeout=timeout) as ser:
-            # Wait for key press to send start signal
-            while True:
-                if keyboard.is_pressed('enter'):
-                    ser.write(b's')  # Send 's' to Arduino
-                    print("Start signal sent to Arduino.")
-                    break
+            # Wait for user to press 'Enter'
+            wait_for_enter()
+            ser.write(b'S')  # Send 'S' to Arduino to start
+            print("Start signal sent to Arduino.")
 
             # Begin data logging
             print(f"Logging started. Data will be saved to '{output_file}'.")
