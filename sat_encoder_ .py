@@ -53,7 +53,7 @@ def main():
         with serial.Serial(arduino_port, baud_rate, timeout=timeout) as ser:
             # Wait for user to press 'Enter'
             wait_for_enter()
-            ser.write(b'S')  # Send 'S' to Arduino to start
+            ser.write(b's')  # Send 'S' to Arduino to start
             print("Start signal sent to Arduino.")
 
             # Begin data logging
